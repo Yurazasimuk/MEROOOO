@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERO | Premium Checkout</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
+
+    <style>
+
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .payment-method-label {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #333;
+        }
+        .payment-method-label input {
+            display: none;
+        }
+        .payment-method-label:has(input:checked) {
+            border-color: #000;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+
+        .iban-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #1c1c1e;
+            border-radius: 12px;
+            padding: 0 15px;
+            height: 56px;
+            margin-bottom: 5px;
+            border: 1px solid #333;
+        }
+        .iban-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            letter-spacing: 1px;
+        }
+        .iban-input::placeholder {
+            color: #666;
+        }
+
+        #card-payment-fields {
+            transition: opacity 0.3s ease;
+        }
+
+
+        .error-msg {
+            color: #bc0000;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body class="checkout-body immersion-mode">
+
+    <canvas id="immersion-particles"></canvas>
+    <div class="glow-bg"></div>
+
+    <a href="index.html" class="back-to-store">← BACK TO STORE</a>
+
+    <div class="checkout-scene">
+
+        <main class="checkout-main">
+            <section class="checkout-card shipping-section fly-in-left">
+                <form id="shipping-form">
+                    <h2 class="card-title">Shipping Address</h2>
+                    <div class="input-group-grid">
+                        <div class="floating-input"><input type="text" id="ship-name" name="Ім'я" placeholder=" " required><label for="ship-name">First Name</label></div>
+                        <div class="floating-input"><input type="text" id="ship-lname" name="Прізвище" placeholder=" " required><label for="ship-lname">Last Name</label></div>
+                    </div>
+
+                    <div class="floating-input"><input type="email" id="ship-email" name="Email" placeholder=" " required><label for="ship-email">Email Address</label></div>
+                    <div class="floating-input"><input type="text" id="ship-address" name="Адреса" placeholder=" " required><label for="ship-address">Full Address</label></div>
+
+                    <div class="input-group-grid">
+                        <div class="floating-input"><input type="text" id="ship-country" name="Країна" placeholder=" " required><label for="ship-country">Country</label></div>
+                        <div class="floating-input"><input type="text" id="ship-city" name="Місто" placeholder=" " required><label for="ship-city">City</label></div>
+                    </div>
+                    <div id="country-text-error" class="error-msg">
+                        Доставка у вказану країну неможлива.
+                    </div>
+                </form>
+            </section>
+
+            <section class="checkout-card payment-section fly-in-left-delay">
+                <h2 class="card-title">Payment Method</h2>
+
+                <div class="payment-methods">
+                    <label class="payment-method-label">
+                        <input type="radio" name="payment_type" value="card" checked id="pay-type-card">
+                         Card / IBAN
+                    </label>
+                    <label class="payment-method-label">
+                        <input type="radio" name="payment_type" value="cod" id="pay-type-cod">
+                         Накладений платіж
+                    </label>
+                </div>
+
+                <form id="payment-form">
+                    <div id="card-payment-fields">
+                        <h3 style="font-size: 15px; margin-bottom: 10px; color: #333; font-weight: 600;">IBAN / Номер рахунку</h3>
+
+                        <div class="iban-input-container">
+                            <span id="country-flag" class="fi" style="font-size: 20px; border-radius: 2px; margin-right: 12px; display: none;"></span>
+                            <input type="text" class="iban-input" id="pay-account" name="Рахунок" placeholder="UA _ _   _ _ _ _   _ _ _ _" maxlength="34" required>
+                        </div>
+
+                        <div id="country-error" class="error-msg">
+                            Оплата з рахунків РФ та РБ не підтримується.
+                        </div>
+                    </div>
+
+                    <div id="cod-payment-message" style="display: none; padding: 20px; text-align: center; background: #f5f5f5; border-radius: 8px; color: #555;">
+                        Оплата здійснюється при отриманні товару у відділенні пошти.
+                    </div>
+                </form>
+            </section>
+
+            <button type="submit" class="floating-pay-btn btn-pay fly-in-up">
+                <span>PAY SECURELY</span>
+            </button>
+        </main>
+
+        <aside class="checkout-card order-summary-section fly-in-right">
+            <h2 class="card-title">Your Order</h2>
+            <div id="checkout-items" class="cart-items-wrapper">
+                </div>
+            <div class="checkout-totals-block">
+                <div class="total-row"><span>Subtotal</span><span id="check-subtotal">0 UAH</span></div>
+                <div class="total-row"><span>Shipping</span><span style="color: #4CAF50;">FREE</span></div>
+                <div class="total-row grand-total-line"><span>Total</span><span id="check-total">0 UAH</span></div>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+
+            const radioCard = document.getElementById('pay-type-card');
+            const radioCod = document.getElementById('pay-type-cod');
+            const cardFields = document.getElementById('card-payment-fields');
+            const codMessage = document.getElementById('cod-payment-message');
+            const accountInput = document.getElementById('pay-account');
+
+            function togglePaymentFields() {
+                if (radioCard.checked) {
+                    cardFields.style.display = 'block';
+                    codMessage.style.display = 'none';
+                    accountInput.setAttribute('required', 'required');
+                } else {
+                    cardFields.style.display = 'none';
+                    codMessage.style.display = 'block';
+                    accountInput.removeAttribute('required');
+                }
+            }
+
+            radioCard.addEventListener('change', togglePaymentFields);
+            radioCod.addEventListener('change', togglePaymentFields);
+
+
+
+            const countryInput = document.getElementById('ship-country');
+            const countryTextError = document.getElementById('country-text-error');
+
+
+            const blockedCountries = ['росія', 'russia', 'российская федерация', 'рф', 'ru', 'білорусь', 'belarus', 'беларусь', 'рб', 'by'];
+
+            countryInput.addEventListener('input', function(e) {
+                let val = e.target.value.toLowerCase().trim();
+
+
+                if (blockedCountries.includes(val)) {
+                    e.target.value = '';
+                    countryTextError.style.display = 'block';
+
+                    countryInput.parentElement.style.transform = 'translateX(5px)';
+                    setTimeout(() => countryInput.parentElement.style.transform = 'translateX(-5px)', 50);
+                    setTimeout(() => countryInput.parentElement.style.transform = 'translateX(0)', 100);
+                } else {
+                    countryTextError.style.display = 'none';
+                }
+            });
+
+
+
+            const flagDisplay = document.getElementById('country-flag');
+            const errorDisplay = document.getElementById('country-error');
+
+            accountInput.addEventListener('input', function(e) {
+                let val = e.target.value.toUpperCase();
+                let cleanVal = val.replace(/\s+/g, '');
+
+                let prefix = cleanVal.substring(0, 2);
+
+
+                if (prefix === 'RU' || prefix === 'BY') {
+                    e.target.value = '';
+                    flagDisplay.style.display = 'none';
+                    errorDisplay.style.display = 'block';
+
+                    accountInput.parentElement.style.transform = 'translateX(5px)';
+                    setTimeout(() => accountInput.parentElement.style.transform = 'translateX(-5px)', 50);
+                    setTimeout(() => accountInput.parentElement.style.transform = 'translateX(0)', 100);
+
+                    return;
+                } else {
+                    errorDisplay.style.display = 'none';
+                }
+
+                if (/^[A-Z]{2}/.test(prefix)) {
+                    flagDisplay.style.display = 'inline-block';
+                    flagDisplay.className = 'fi fi-' + prefix.toLowerCase();
+                } else {
+                    flagDisplay.style.display = 'none';
+                    flagDisplay.className = 'fi';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

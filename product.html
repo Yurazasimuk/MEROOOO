@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERO | Product</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="product-page">
+
+<header class="header">
+    <div class="header-section left">
+        <a href="index.html" class="logo">MERO</a>
+        <nav class="nav-links">
+            <a href="catalog.html">Woman</a>
+            <a href="#">Man</a>
+        </nav>
+    </div>
+    <div class="header-section center">
+        <div class="search-bar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" placeholder="Search products...">
+        </div>
+    </div>
+    <div class="header-section right">
+        <nav class="nav-links">
+            <a href="#" class="sale">Sale</a>
+            <a href="#">Accessories</a>
+        </nav>
+        <div class="header-icons">
+            <a href="auth.html" id="user-icon-link" class="icon-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </a>
+            <a href="#" class="icon-btn cart">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                <span class="badge">0</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="product-container">
+    <div class="product-gallery">
+        <img id="dynamic-img" src="" alt="Product" style="width:100%; object-fit:cover;">
+    </div>
+
+    <div class="product-info">
+        <h1 id="dynamic-title" class="product-title">Loading...</h1>
+        <p id="dynamic-price" class="product-price">0 UAH</p>
+        <div class="product-divider"></div>
+        <p id="dynamic-desc" class="product-description">Please wait...</p>
+
+        <div class="size-selector">
+            <span class="size-label">Select Size: <span id="selected-size-text" style="color:#000; font-weight:700;">M</span></span>
+            <div class="size-options" id="size-options-container">
+                <button class="size-btn">XS</button>
+                <button class="size-btn">S</button>
+                <button class="size-btn active">M</button>
+                <button class="size-btn">L</button>
+            </div>
+        </div>
+
+        <button id="add-to-cart-main-btn" class="add-btn hover-effect"><span>ADD TO BAG</span></button>
+
+        <div class="product-details-list">
+            <details>
+                <summary>Shipping & Returns</summary>
+                <p>Free standard shipping on all orders. You can return any item within 14 days of receipt.</p>
+            </details>
+            <details>
+                <summary>Composition & Care</summary>
+                <p>Premium materials. Follow care instructions on the label.</p>
+            </details>
+        </div>
+    </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

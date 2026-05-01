@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERO | The Atelier: Tokyo Cinematic</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400&family=Inter:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+
+
+        :root {
+            --mero-red: #bc0000;
+            --mero-white: #ffffff;
+            --mero-black: #1a1a1a;
+            --mero-bg: #ffffff;
+            --text-dark: #111111;
+            --text-gray: #666666;
+        }
+
+        body {
+            background-color: var(--mero-bg);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+
+        #sakura-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1000;
+        }
+
+        .petal {
+            position: absolute;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffdbdb 100%);
+            border-radius: 150% 0 150% 0;
+            opacity: 0;
+            will-change: transform, top, left, opacity;
+            animation: fall linear infinite;
+        }
+
+        .petal.type-1 { border-radius: 150% 0 150% 0; }
+        .petal.type-2 { border-radius: 50% 50% 50% 0; }
+        .petal.type-3 { border-radius: 50% 0 50% 50%; }
+
+        @keyframes fall {
+            0% { top: -10%; transform: translateX(0) translateY(0) rotateZ(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { top: 110%; transform: translateX(200px) translateY(50px) rotateZ(180deg) scale(1.2); opacity: 0; }
+        }
+
+
+        .header { background: transparent; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); transition: all 0.4s ease; }
+        .header.scrolled { background: rgba(255,255,255,0.98); color: var(--text-dark); border-bottom: 1px solid #eaeaea; }
+        .header a, .header input { color: #fff; transition: color 0.4s; }
+        .header.scrolled a, .header.scrolled input { color: var(--text-dark) !important; }
+        .header svg { stroke: #fff; transition: stroke 0.4s; }
+        .header.scrolled svg { stroke: var(--text-dark); }
+        .header .sale { color: var(--mero-red) !important; font-weight: 700; }
+        .header .search-bar { background: rgba(255,255,255,0.1); border: none; }
+        .header.scrolled .search-bar { background: #f5f5f5; }
+        .header-icons .badge { background: var(--mero-red); color: #fff; }
+
+
+        .japan-hero {
+            position: relative; height: 100vh; width: 100%;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; background-color: #000;
+        }
+
+        .video-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 1; }
+
+        .youtube-bg {
+            position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw;
+            min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%); pointer-events: none;
+        }
+
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%); z-index: 2;
+        }
+
+        .japan-hero-content {
+            position: relative; z-index: 3; text-align: center; color: #fff;
+            animation: heroFadeIn 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes heroFadeIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .hero-label {
+            font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px;
+            letter-spacing: 8px; text-transform: uppercase; margin-bottom: 20px; color: rgba(255,255,255,0.8);
+        }
+
+        .japan-hero-title {
+            font-family: 'Inter', sans-serif; font-weight: 900; font-size: 11vw;
+            line-height: 0.85; letter-spacing: -3px; margin: 0; text-transform: uppercase;
+        }
+
+        .outline-text { -webkit-text-stroke: 2px #fff; color: transparent; display: block; margin-top: 10px; }
+
+        .japan-hero-subtitle { font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px; margin-top: 30px; color: #ccc; }
+
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            z-index: 3; color: #fff; font-size: 11px; font-family: 'Inter', sans-serif;
+            letter-spacing: 3px; display: flex; flex-direction: column; align-items: center;
+            gap: 15px; opacity: 0.8; animation: floatUpDown 2s infinite ease-in-out; text-decoration: none;
+        }
+
+        .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0)); }
+
+        @keyframes floatUpDown {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, 10px); }
+        }
+
+
+        .editorial-section { padding: 150px 10%; background-color: var(--mero-bg); position: relative; z-index: 5; }
+
+        .editorial-item {
+            display: flex; align-items: center; padding-bottom: 120px; margin-bottom: 120px;
+            position: relative; opacity: 0; transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+
+        .editorial-item::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+            background-color: #111111; transform-origin: left; transform: scaleX(0);
+            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); transition-delay: 0.3s;
+        }
+
+        .editorial-item.visible { opacity: 1; transform: translateY(0); }
+        .editorial-item.visible::after { transform: scaleX(1); }
+
+        .editorial-item:nth-child(even) { flex-direction: row-reverse; }
+
+        .editorial-img-wrap {
+            flex: 0 0 45%; overflow: hidden; position: relative; border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.06); aspect-ratio: 3/4;
+        }
+
+        .editorial-img-wrap::after {
+            content:''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 1px solid var(--mero-red); opacity: 0; transition: 0.5s ease; pointer-events: none; z-index: 2;
+        }
+
+        .editorial-item:hover .editorial-img-wrap::after { opacity: 1; }
+
+        .editorial-img {
+            width: 100%; height: 100%; object-fit: cover; transform: scale(1.08);
+            will-change: transform; display: block;
+        }
+
+        .editorial-text { flex: 1; padding: 0 80px; text-align: left; }
+        .editorial-item:nth-child(even) .editorial-text { padding-right: 80px; padding-left: 0; }
+
+        .japan-number {
+            font-family: 'Inter', sans-serif; font-weight: 200; font-size: 80px;
+            color: #f0f0f0; line-height: 1; margin-bottom: -15px; position: relative; z-index: -1;
+        }
+
+        .item-name {
+            font-family: 'Playfair Display', serif; font-weight: 800; font-size: 36px;
+            color: var(--text-dark); margin: 0; letter-spacing: -1px; line-height: 1.1;
+        }
+
+        .item-desc {
+            font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text-gray);
+            line-height: 1.6; margin: 20px 0 20px 0; max-width: 400px;
+        }
+
+        .item-price { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 18px; color: var(--text-dark); margin: 0 0 20px 0; }
+
+
+        .size-selector {
+            display: flex; gap: 10px; margin-bottom: 30px;
+        }
+        .size-option { display: none; }
+        .size-label {
+            display: flex; align-items: center; justify-content: center;
+            width: 45px; height: 45px; border: 1px solid #ddd;
+            font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+            color: var(--text-dark); cursor: pointer; transition: all 0.3s ease;
+        }
+        .size-label:hover { border-color: var(--text-dark); }
+        .size-option:checked + .size-label { background-color: var(--text-dark); color: #fff; border-color: var(--text-dark); }
+        .size-option:disabled + .size-label { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
+
+        .editorial-add-btn {
+            display: inline-block; background: none; border: 1px solid var(--text-dark); color: var(--text-dark);
+            padding: 15px 40px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px;
+            letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
+        }
+
+        .editorial-add-btn:hover { background: var(--text-dark); color: #fff; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+        .footer { background: #fff; color: var(--text-dark); padding: 80px 10% 40px 10%; border-top: 1px solid #eaeaea; }
+
+        @media (max-width: 992px) {
+            .japan-hero-title { font-size: 18vw;}
+            .outline-text { -webkit-text-stroke: 1px #fff; }
+            .editorial-section { padding: 80px 5%; }
+            .editorial-item, .editorial-item:nth-child(even) { flex-direction: column; text-align: left; padding-bottom: 80px; margin-bottom: 80px; }
+            .editorial-img-wrap { width: 100%; aspect-ratio: auto; min-height: 60vh; }
+            .editorial-text, .editorial-item:nth-child(even) .editorial-text { padding: 40px 0 0 0; }
+            .japan-number { font-size: 50px; }
+            .item-name { font-size: 28px; }
+            .item-desc { max-width: 100%; }
+        }
+    </style>
+</head>
+<body class="content-loaded">
+
+    <div id="sakura-container"></div>
+
+    <header class="header" id="main-header">
+        <div class="header-section left">
+            <a href="index.html" class="logo" style="text-decoration: none;">MERO</a>
+            <nav class="nav-links">
+                <a href="catalog.html">Woman</a>
+                <a href="#">Man</a>
+                <a href="lab.html" class="lab-nav-link">Lab <span class="ai-badge">AI</span></a>
+            </nav>
+        </div>
+        <div class="header-section center">
+            <div class="search-bar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Search Atelier...">
+            </div>
+        </div>
+        <div class="header-section right">
+            <nav class="nav-links">
+                <a href="promo.html" class="sale">Sale</a>
+                <a href="#">Accessories</a>
+            </nav>
+            <div class="header-icons">
+                <a href="auth.html" class="icon-btn" title="Profile">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <a href="#" class="icon-btn cart">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <span class="badge">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="japan-hero">
+            <div class="video-wrapper">
+                <iframe class="youtube-bg"
+                        src="https://www.youtube.com/embed/ChxDEAN8EtY?autoplay=1&mute=1&loop=1&playlist=ChxDEAN8EtY&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1"
+                        frameborder="0"
+                        allow="autoplay; fullscreen"
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="hero-overlay"></div>
+
+            <div class="japan-hero-content">
+                <div class="hero-label">Mero Atelier Presents</div>
+                <h1 class="japan-hero-title">TOKYO<br><span class="outline-text">AESTHETICS</span></h1>
+                <p class="japan-hero-subtitle">Cinematic Drop 02</p>
+            </div>
+
+            <a href="#collection" class="scroll-indicator">
+                DISCOVER
+                <div class="scroll-line"></div>
+            </a>
+        </section>
+
+        <section class="editorial-section" id="collection">
+
+            <div class="editorial-item">
+                <div class="editorial-img-wrap">
+                    <img src="https://i.pinimg.com/1200x/5d/04/49/5d0449f074265323f2e429b4610fecd5.jpg" alt="Shibuya Tech Suit" class="editorial-img parallax-img">
+                </div>
+                <div class="editorial-text">
+                    <div class="japan-number">一</div>
+                    <h2 class="item-name">SHIBUYA TECH<br>TRACKSUIT</h2>
+                    <p class="item-desc">Деконструкція спортивного стилю. Оверсайз силует, натхненний вуличним мистецтвом району Шібуя. Виконаний з преміального нейлону з водовідштовхуючим покриттям для кам'яних джунглів.</p>
+                    <p class="item-price">12 800 UAH</p>
+
+                    <div class="size-selector">
+                        <input type="radio" id="s1-s" name="size-1" value="S" class="size-option">
+                        <label for="s1-s" class="size-label">S</label>
+
+                        <input type="radio" id="s1-m" name="size-1" value="M" class="size-option">
+                        <label for="s1-m" class="size-label">M</label>
+
+                        <input type="radio" id="s1-l" name="size-1" value="L" class="size-option">
+                        <label for="s1-l" class="size-label">L</label>
+
+                        <input type="radio" id="s1-xl" name="size-1" value="XL" class="size-option">
+                        <label for="s1-xl" class="size-label">XL</label>
+                    </div>
+
+                    <button class="editorial-add-btn" onclick="handleJapanAddToCart(this, 'SHIBUYA TECH SUIT', 12800, 'https://i.pinimg.com/1200x/5d/04/49/5d0449f074265323f2e429b4610fecd5.jpg');">ADD TO BAG →</button>
+                </div>
+            </div>
+
+            <div class="editorial-item">
+                <div class="editorial-img-wrap">
+                    <img src="https://i.pinimg.com/736x/06/12/e3/0612e353f39b146c3e255dc2828ad12e.jpg" alt="Kyoto Oversized Scarf" class="editorial-img parallax-img">
+                </div>
+                <div class="editorial-text">
+                    <div class="japan-number">二</div>
+                    <h2 class="item-name">KYOTO ART<br>OVERSIZED SCARF</h2>
+                    <p class="item-desc">Витонченість традицій. Об'ємний шарф з м'якої вовни, прикрашений абстрактним принтом у стилі класичного японського живопису тушшю. Зігріває, як чашка матчі.</p>
+                    <p class="item-price">5 200 UAH</p>
+
+                    <div class="size-selector">
+                        <input type="radio" id="s2-os" name="size-2" value="OS" class="size-option" checked>
+                        <label for="s2-os" class="size-label">OS</label>
+                    </div>
+
+                    <button class="editorial-add-btn" onclick="handleJapanAddToCart(this, 'KYOTO OVERSIZED SCARF', 5200, 'https://i.pinimg.com/736x/06/12/e3/0612e353f39b146c3e255dc2828ad12e.jpg');">ADD TO BAG →</button>
+                </div>
+            </div>
+
+            <div class="editorial-item">
+                <div class="editorial-img-wrap">
+                    <img src="https://i.pinimg.com/736x/af/f0/33/aff033ac157c8df4e08c284c60e3692d.jpg" alt="Harajuku Graphic Tee" class="editorial-img parallax-img">
+                </div>
+                <div class="editorial-text">
+                    <div class="japan-number">三</div>
+                    <h2 class="item-name">HARAJUKU<br>GRAPHIC TEE</h2>
+                    <p class="item-desc">Чистий стрітвір. Футболка вільного крою з щільної бавовни з унікальним графічним принтом, що поєднує кандзі та сучасний поп-арт. Створена для міського ритму.</p>
+                    <p class="item-price">3 900 UAH</p>
+
+                    <div class="size-selector">
+                        <input type="radio" id="s3-s" name="size-3" value="S" class="size-option">
+                        <label for="s3-s" class="size-label">S</label>
+
+                        <input type="radio" id="s3-m" name="size-3" value="M" class="size-option">
+                        <label for="s3-m" class="size-label">M</label>
+
+                        <input type="radio" id="s3-l" name="size-3" value="L" class="size-option">
+                        <label for="s3-l" class="size-label">L</label>
+                    </div>
+
+                    <button class="editorial-add-btn" onclick="handleJapanAddToCart(this, 'HARAJUKU GRAPHIC TEE', 3900, 'https://i.pinimg.com/736x/af/f0/33/aff033ac157c8df4e08c284c60e3692d.jpg');">ADD TO BAG →</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container" style="text-align: center; opacity: 0.5; font-size: 11px;">
+            <p>© 2026 MERO ATELIER. JAPAN DROP. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="side-cart" id="side-cart">
+        <div class="cart-header">
+            <h2 class="cart-title">YOUR BAG (<span id="cart-count-title">0</span>)</h2>
+            <button class="close-cart" id="close-cart">✕ CLOSE</button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <p class="empty-msg">Your bag is currently empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total"><span>SUBTOTAL</span><span id="cart-subtotal">0 UAH</span></div>
+            <button class="btn-black checkout-btn">CHECKOUT</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+
+        function handleJapanAddToCart(btnElement, name, price, img) {
+            const container = btnElement.closest('.editorial-text');
+            const selectedSizeInput = container.querySelector('.size-option:checked');
+
+            if (!selectedSizeInput) {
+                alert('Будь ласка, оберіть розмір перед додаванням у кошик!');
+                return;
+            }
+
+            const size = selectedSizeInput.value;
+            const finalProductName = `${name} (${size})`;
+
+
+            if (typeof addToCart === 'function') {
+                addToCart(finalProductName, price, img, btnElement);
+            } else {
+                console.error("Функція addToCart не знайдена в script.js");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const header = document.getElementById('main-header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > window.innerHeight - 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+
+            const sakuraContainer = document.getElementById('sakura-container');
+            const maxPetals = 30;
+
+            function createPetal() {
+                const petal = document.createElement('div');
+                const petalType = Math.floor(Math.random() * 3) + 1;
+                petal.classList.add('petal', `type-${petalType}`);
+
+                const size = Math.random() * 10 + 6;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size * 1.3}px`;
+                petal.style.left = `${Math.random() * 100}vw`;
+
+                const duration = Math.random() * 10 + 8;
+                petal.style.animationDuration = `${duration}s`;
+                petal.style.opacity = Math.random() * 0.5 + 0.3;
+
+                sakuraContainer.appendChild(petal);
+
+                setTimeout(() => {
+                    petal.remove();
+                    createPetal();
+                }, duration * 1000);
+            }
+
+            for (let i = 0; i < maxPetals; i++) {
+                setTimeout(createPetal, Math.random() * 4000);
+            }
+
+
+            const parallaxImages = document.querySelectorAll('.parallax-img');
+
+            window.addEventListener('scroll', function() {
+                if(window.innerWidth > 992) {
+                    parallaxImages.forEach(img => {
+                        const rect = img.parentElement.getBoundingClientRect();
+
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            const distanceToCenter = (window.innerHeight / 2) - (rect.top + rect.height / 2);
+                            const yPos = distanceToCenter * -0.08;
+                            img.style.transform = `translateY(${yPos}px) scale(1.08)`;
+                        }
+                    });
+                }
+            });
+
+
+            const editorialItems = document.querySelectorAll('.editorial-item');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.2,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            editorialItems.forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>
